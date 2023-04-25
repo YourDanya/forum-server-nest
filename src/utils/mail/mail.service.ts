@@ -18,9 +18,8 @@ export class MailService {
     }
 
     async sendMail(
-        { email, text, html, subject }: { email: string, text: string, html: HTMLCollection, subject: string }
+        { email, text, html, subject }: { email: string, text: string, html: string, subject: string }
     ) {
-
         let info = await this.transporter.sendMail({
             from: process.env.MAIL_TRANSPORT_NAME,
             to: email,

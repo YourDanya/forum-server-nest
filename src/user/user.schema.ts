@@ -2,6 +2,9 @@ import { Schema } from '@nestjs/mongoose'
 import { Prop} from '@nestjs/mongoose'
 import { SchemaFactory } from '@nestjs/mongoose'
 import { Thread } from 'src/thread/thread.schema'
+import { HydratedDocument } from 'mongoose'
+
+export type UserDocument = HydratedDocument<User>
 
 @Schema()
 export class User {
@@ -9,6 +12,12 @@ export class User {
 
     @Prop()
     name: string
+
+    @Prop()
+    description: string
+
+    @Prop()
+    birthDate: string
 
     @Prop()
     email: string
@@ -33,3 +42,4 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
+

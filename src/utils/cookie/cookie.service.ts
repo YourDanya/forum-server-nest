@@ -11,10 +11,6 @@ export class CookieService {
     constructor() {}
 
     addCookie(res: Response, name: string, value: any) {
-        console.log('jwt', jwt)
-
-        console.log('value', value)
-
         const token = jwt.sign(value, process.env.JWT_SECRET, {
             expiresIn: process.env.JWT_SECRET_EXPIRES_IN,
         })

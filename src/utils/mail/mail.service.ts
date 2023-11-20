@@ -24,8 +24,8 @@ export class MailService {
             from: process.env.MAIL_TRANSPORT_NAME,
             to: email,
             subject,
-            text: text,
-            html: html
+            text,
+            html
         })
     }
 }

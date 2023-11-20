@@ -9,11 +9,12 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { User } from 'src/user/user.schema'
 import { Body } from '@nestjs/common'
-import { getValues } from 'src/utils/typescript/typescript'
 import { MailService } from 'src/utils/mail/mail.service'
-import crypto from 'crypto'
-import pug from 'pug'
+import * as crypto from 'crypto'
+import * as pug from 'pug'
 import { CookieService } from 'src/utils/cookie/cookie.service'
+import { Delete } from '@nestjs/common'
+import { UserDocument } from 'src/user/user.schema'
 
 @Controller('/user')
 export class UserController {
@@ -25,18 +26,37 @@ export class UserController {
     ) {}
 
     @Get('/data')
-    getUser(@Res() res) {
-        const user = {}
+    getUser(@Req() {user}: {user: User}, @Res() res) {
         res.status(200).json({
-            message: 'Logged in successfully.',
+            message: 'Get user data successfully',
             user
         })
     }
 
     @Post('/login')
-    login(@Body() body: {}, @Res() res) {
+    async login(@Body() body: {email: string, password: string}, @Res() res) {
+        const {email, password} = body
+        const user = await this.userModel.findOne({email})
+
+        if (!user) {
+            return res.status(400).json({message: 'User does not exist.'})
+        }
+
+        if (!user.active) {
+            return res.status(400).json({message: 'User was not activated.'})
+        }
+
+        const isMatch = user.password === crypto.createHash('sha256').update(password).digest('hex')
+
+        if (!isMatch) {
+            return res.status(400).json({message: 'User password is not correct'})
+        }
+
+        this.cookieService.addCookie(res, 'user', user)
+
         res.status(200).json({
-            message: 'Logged in successfully.'
+            message: 'Logged in successfully.',
+            user
         })
     }
 
@@ -61,9 +81,13 @@ export class UserController {
             return res.status(400).json({ message: 'Provided email already in use.' })
         }
 
-        user = await this.userModel.create(body)
+        console.log('user', user)
 
-        this.cookieService.addCookie(res, 'user', user)
+        if (!user) {
+            user = await this.userModel.create(body)
+        }
+
+        this.cookieService.addCookie(res, 'user', {_id: user._id})
 
         res.status(200).json({
             messge: 'Registered successfully',
@@ -74,8 +98,7 @@ export class UserController {
     @Post('/send-register-code')
     async sendRegisterCode(@Req() req: Request, @Res() res) {
         const decoded = await this.cookieService.getFromCookie(req, 'user')
-
-        const user = await this.userModel.findById(decoded.id)
+        const user = await this.userModel.findById(decoded._id)
 
         if (!user) {
             res.status(400).json({ message: 'There\'s no user.' })
@@ -95,9 +118,13 @@ export class UserController {
             return res.status(400).json({ message: `Wait ${timer}`, timer })
         }
 
+        user.resendActivateUser = Date.now() + 2 * 60 * 1000
+
         await this.mailService.sendMail({
             email: user.email, subject: 'User activation', html, text: ''
         })
+
+        await user.save()
 
         res.status(200).json({ message: 'Send code successfully', timer: 2 * 60 * 1000 })
     }
@@ -116,8 +143,12 @@ export class UserController {
             return res.status(400).json({ message: `The code is invalid or has expired` })
         }
 
+        user.password = crypto.createHash('sha256').update(user.password).digest('hex')
         user.active = true
+
         await user.save()
+
+        this.cookieService.addCookie(res, 'user', {_id: user._id})
 
         res.status(200).json({
             message: 'User activated successfully',
@@ -125,16 +156,31 @@ export class UserController {
         })
     }
 
-    @Post('/update-data')
-    updateUser(@Req() req, @Res() res) {
+    @Post('/data')
+    async updateUser(@Req() req: Request & {user: UserDocument}, @Res() res: Response) {
+        const allowedOptions = {'name': true, 'birthDate': true, 'description': true}
 
+        let {body, user} = req
+
+        for (let prop in body) {
+            if (prop in allowedOptions) {
+                user[prop] = body[prop]
+            }
+        }
+
+        await user.save()
+
+        res.status(200).json({
+            user,
+            message: 'User data was updated.'
+        })
     }
 
-    @Post('/delete')
-    delete(@Res() res) {
-        this.userModel.deleteMany()
+    @Delete('/')
+    async deleteMany(@Res() res) {
+        await this.userModel.deleteMany()
         res.status(200).json({
-            message: 'Deleted user successfully'
+            message: 'Deleted users successfully'
         })
     }
 

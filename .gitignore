@@ -3,7 +3,7 @@
 /node_modules
 
 *.env
-/Makefile
+Makefile
 
 # Logs
 logs

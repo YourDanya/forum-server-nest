@@ -5,8 +5,8 @@ import { MongooseModule } from '@nestjs/mongoose'
 import { ThreadSchema } from 'src/thread/thread.schema'
 
 @Module({
-    imports: [MongooseModule.forFeature([{name: 'Thread', schema: ThreadSchema}])],
+    imports: [],
     controllers: [ThreadController],
-    providers: [ThreadService, MongooseModule]
+    providers: [ThreadService]
 })
 export class ThreadModule {}

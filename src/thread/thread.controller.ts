@@ -14,10 +14,10 @@ export class ThreadController {
 
     @Get('/')
     getThreads(@Res() res) {
-        const threads = this.threadSerice.findAll()
-        res.status(200).json({
-            threads
-        })
+        // const threads = this.threadSerice.findAll()
+        // res.status(200).json({
+        //     threads
+        // })
     }
 
     @Get('/:id')
@@ -28,10 +28,10 @@ export class ThreadController {
     @Post('/')
     createThread(@Req() req, @Res() res) {
         console.log('req.body', req.body)
-        this.threadSerice.create({data: req.body.data})
-        const threads = this.threadSerice.findAll()
-        res.status(200).json({
-            threads
-        })
+        // this.threadSerice.create({data: req.body.data})
+        // const threads = this.threadSerice.findAll()
+        // res.status(200).json({
+        //     threads
+        // })
     }
 }

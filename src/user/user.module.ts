@@ -1,20 +1,21 @@
 import { Module } from '@nestjs/common'
 import { NestModule } from '@nestjs/common'
 import { MiddlewareConsumer } from '@nestjs/common'
-import { RequestMethod } from '@nestjs/common'
-import { MongooseModule } from '@nestjs/mongoose'
 import { UserController } from 'src/user/user.controller'
-import { UserSchema } from 'src/user/user.schema'
 import { MailModule } from 'src/utils/mail/mail.module'
 import { CookieModule } from 'src/utils/cookie/cookie.module'
 import { GetUserMiddleware } from 'src/user/user.middleware'
 import { NotLoginedMiddleware } from 'src/user/user.middleware'
+import {DatabaseModule} from 'src/database/database.module'
+import {userProviders} from 'src/user/user.providers'
+import {UserService} from 'src/user/user.service'
+import {RegisterHandler} from 'src/user/controller-handlers/register/register.handler'
 
 @Module({
-    imports: [MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]), MailModule, CookieModule],
+    imports: [MailModule, CookieModule, DatabaseModule],
     controllers: [UserController],
-    providers: [MongooseModule],
-    exports: [MongooseModule]
+    providers: [...userProviders],
+    exports: [UserService]
 })
 export class UserModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {

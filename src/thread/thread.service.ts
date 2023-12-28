@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common'
+import {CreateThreadData} from 'src/thread/thread.types'
+import {ThreadPgService} from 'src/thread/services/thread-pg.service'
+import {GetThreadData} from 'src/thread/thread.types'
+import {GetThreadsData} from 'src/thread/thread.types'
 
 @Injectable()
-export class ThreadService {
-    private readonly threads: {data: string}[] = []
+export abstract class ThreadService {
+    abstract createThread(data: CreateThreadData)
 
-    create({data}: {data: string}) {
-        console.log('data', data)
-        this.threads.push({data})
-    }
+    abstract getThread(data: GetThreadData)
 
-    findAll() {
-        return this.threads
-    }
+    abstract getThreads(data: GetThreadsData)
 }

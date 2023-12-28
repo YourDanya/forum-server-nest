@@ -16,6 +16,7 @@ import {
 import {UpdateUserHandler} from 'src/user/controller-handlers/update-user/update-user.handler'
 import {LoginBody} from 'src/user/controller-handlers/login/login.types'
 import {LoginHandler} from 'src/user/controller-handlers/login/login.handler'
+import {UserRequest} from 'src/user/user.types'
 
 @Controller('/user')
 export class UserController {
@@ -47,12 +48,12 @@ export class UserController {
     }
 
     @Get('/send-register-code')
-    async sendRegisterCode(@Req() req: Request & {user: User}, @Res() res: Response) {
+    async sendRegisterCode(@Req() req: UserRequest, @Res() res: Response) {
         await this.sendRegisterCodeHandler.handle(req, res)
     }
 
     @Post('/confirm-register-email')
-    async confirmRegisterEmail(@Req() req: Request & { user: User }, @Res() res: Response) {
+    async confirmRegisterEmail(@Req() req: UserRequest, @Res() res: Response) {
         await this.confirmRegisterEmailHandler.handle(req, res)
     }
 

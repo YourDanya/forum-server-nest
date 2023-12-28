@@ -41,12 +41,14 @@ export class User {
     activateUserCode: string | null
 
     @Column({
-        nullable: true
+        nullable: true,
+        type: 'bigint'
     })
     activateUserExpires: number | null
 
     @Column({
-        nullable: true
+        nullable: true,
+        type: 'bigint'
     })
     resendActivateUser: number | null
 }

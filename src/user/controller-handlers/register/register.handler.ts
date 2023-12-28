@@ -1,9 +1,9 @@
 import {Injectable} from '@nestjs/common'
 import {CookieService} from 'src/utils/cookie/cookie.service'
-import {UserService} from 'src/user/user.service'
 import {RegisterBody} from 'src/user/controller-handlers/register/register.types'
 import {Response, Request} from 'express'
 import {User} from 'src/user/user.entity'
+import {UserService} from 'src/user/user.service'
 
 @Injectable()
 export class RegisterHandler {
@@ -11,7 +11,7 @@ export class RegisterHandler {
         private cookieService: CookieService,
         private userService: UserService
     ) {}
-    async handle (req: Request & {body: RegisterBody}, res: Response) {
+    async handle (req: Request<any, any, RegisterBody> , res: Response) {
         const {body} = req
 
         if (body.password !== body.passwordConfirm) {
@@ -24,10 +24,12 @@ export class RegisterHandler {
             return this.sendEmailInUseError(res)
         }
 
+        const {passwordConfirm: _ , ...userData} = body
+
         if (!user) {
-            user = await this.userService.create(body)
+            user = await this.userService.create(userData)
         } else {
-            user = await this.userService.updateOne({_id: user._id, ...body})
+            user = await this.userService.updateOne({_id: user._id, ...userData})
         }
 
         this.cookieService.addCookie(res, 'user', {_id: user._id})

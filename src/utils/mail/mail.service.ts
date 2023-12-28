@@ -7,9 +7,10 @@ export class MailService {
 
     constructor() {
         this.transporter = nodemailer.createTransport({
+            pool: true,
             host: 'smtp.gmail.com',
-            port: 587,
-            secure: false,
+            port: 465,
+            secure: true,
             auth: {
                 user: process.env.MAIL_TRANSPORT_NAME,
                 pass: process.env.MAIL_TRANSPORT_PASSWORD
@@ -20,7 +21,7 @@ export class MailService {
     async sendMail(
         { email, text, html, subject }: { email: string, text: string, html: string, subject: string }
     ) {
-        let info = await this.transporter.sendMail({
+        return await this.transporter.sendMail({
             from: process.env.MAIL_TRANSPORT_NAME,
             to: email,
             subject,

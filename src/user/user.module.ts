@@ -8,20 +8,18 @@ import { GetUserMiddleware } from 'src/user/user.middleware'
 import { NotLoginedMiddleware } from 'src/user/user.middleware'
 import {DatabaseModule} from 'src/database/database.module'
 import {userProviders} from 'src/user/user.providers'
-import {UserService} from 'src/user/user.service'
-import {RegisterHandler} from 'src/user/controller-handlers/register/register.handler'
 
 @Module({
     imports: [MailModule, CookieModule, DatabaseModule],
     controllers: [UserController],
     providers: [...userProviders],
-    exports: [UserService]
+    exports: []
 })
 export class UserModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
             .apply(GetUserMiddleware)
-            .forRoutes('user/data')
+            .forRoutes('user')
         consumer
             .apply(NotLoginedMiddleware)
             .forRoutes('user/data')

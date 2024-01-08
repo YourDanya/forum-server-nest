@@ -1,24 +1,30 @@
 import {Injectable} from '@nestjs/common'
+import {UserService} from 'src/user/user.service'
+import {MailService} from 'src/utils/mail/mail.service'
+import {Request} from 'express'
 import {User} from 'src/user/user.entity'
-import {Response, Request} from 'express'
+import {Response} from 'express'
+import * as pug from 'pug'
+import * as crypto from 'crypto'
+import {UserRequest} from 'src/user/user.types'
 import {SendCodeService} from 'src/user/utils/send-code/send-code.service'
 
 @Injectable()
-export class SendRegisterCodeHandler {
+export class SendChangeEmailCodeHandler {
 
     constructor(
         private sendCodeService: SendCodeService
     ) {}
 
-    async handle(req: Request & { user: User }, res: Response) {
+    async handle(req: UserRequest, res: Response) {
         const {user} = req
 
-        if (!user) {
+        if (!user || !user.active) {
             return this.sendNoUserError(res)
         }
 
-        if (user.active) {
-            return this.sendUserActivatedError(res)
+        if (!user.changeEmail) {
+            return this.sendNoChangeEmailError(res)
         }
 
         await this.sendCodeService.sendCode(req, res)
@@ -35,11 +41,11 @@ export class SendRegisterCodeHandler {
         })
     }
 
-    sendUserActivatedError(res: Response) {
+    sendNoChangeEmailError(res: Response) {
         res.status(400).json({
             message: {
-                en: 'User already activated.',
-                ru: 'Пользователь уже ативирован.'
+                en: 'There\'s no email provided for change.',
+                ru: 'Электронная почта для внесения изменений не указана.'
             }
         })
     }

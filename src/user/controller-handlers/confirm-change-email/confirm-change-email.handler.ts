@@ -1,15 +1,14 @@
-import * as crypto from 'crypto'
-import {Request, Response} from 'express'
-import {User} from 'src/user/user.entity'
-import {CookieService} from 'src/utils/cookie/cookie.service'
 import {Injectable} from '@nestjs/common'
 import {UserService} from 'src/user/user.service'
+import {CookieService} from 'src/utils/cookie/cookie.service'
 import {UserRequest} from 'src/user/user.types'
-import {FilteredUser} from 'src/user/user.types'
+import {Response} from 'express'
+import crypto from 'crypto'
 import {filterUser} from 'src/user/utils/filter-user/filter-user'
+import {FilteredUser} from 'src/user/user.types'
 
 @Injectable()
-export class ConfirmRegisterEmailHandler {
+export class ConfirmChangeEmailHandler {
     constructor(
         private userService: UserService,
         private cookieService: CookieService
@@ -26,12 +25,9 @@ export class ConfirmRegisterEmailHandler {
             return this.sendInvalidError(res)
         }
 
-        const password = crypto.createHash('sha256').update(user.password).digest('hex')
-        const active = true
-
         await this.userService.updateOne({
-            _id: req.user._id, password, active, activateUserCode: null, resendActivateUser: null,
-            activateUserExpires: null
+            _id: req.user._id, email: user.changeEmail,
+            activateUserCode: null, resendActivateUser: null, activateUserExpires: null
         })
 
         this.cookieService.addCookie(res, 'user', {_id: user._id})

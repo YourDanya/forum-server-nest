@@ -25,7 +25,7 @@ export class UserPgService implements UserService{
         const res = await client.query(query, [columnValue])
         client.release()
 
-        return snakeToCamel<User>(res.rows[0])
+        return res.rows[0] && snakeToCamel<User>(res.rows[0])
     }
 
     async create(data: DeepPartial<User>) {

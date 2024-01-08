@@ -9,6 +9,11 @@ import {UpdateUserHandler} from 'src/user/controller-handlers/update-user/update
 import {LoginHandler} from 'src/user/controller-handlers/login/login.handler'
 import {UserService} from 'src/user/user.service'
 import {UserPgService} from 'src/user/services/user-pg.service'
+import {GetMeHandler} from 'src/user/controller-handlers/get-me/get-me.handler'
+import {SendCodeService} from 'src/user/utils/send-code/send-code.service'
+import {ChangeEmailHandler} from 'src/user/controller-handlers/change-email/change-email.handler'
+import {SendChangeEmailCodeHandler} from 'src/user/controller-handlers/send-change-email-code/send-change-email-code'
+import {ConfirmChangeEmailHandler} from 'src/user/controller-handlers/confirm-change-email/confirm-change-email.handler'
 
 export const userProviders = [
     // {
@@ -21,9 +26,14 @@ export const userProviders = [
         useClass: UserPgService,
         useFactory: null
     },
+    SendCodeService,
+    GetMeHandler,
     RegisterHandler,
     SendRegisterCodeHandler,
     ConfirmRegisterEmailHandler,
+    ChangeEmailHandler,
+    SendChangeEmailCodeHandler,
+    ConfirmChangeEmailHandler,
     UpdateUserHandler,
     LoginHandler
 ]

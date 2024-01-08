@@ -7,10 +7,6 @@ import {CookieService} from 'src/utils/cookie/cookie.service'
 import {User} from 'src/user/user.entity'
 import {UserService} from 'src/user/user.service'
 import {UserRequest} from 'src/user/user.types'
-import {filterObject} from 'src/utils/helpers/filter-object/filter-object'
-import {filterUser} from 'src/user/utils/filter-user'
-
-
 
 @Injectable()
 export class GetUserMiddleware implements NestMiddleware {
@@ -21,14 +17,16 @@ export class GetUserMiddleware implements NestMiddleware {
     ) {}
 
     async use(req: UserRequest, res: Response, next: NextFunction) {
-        const decoded: User = await this.cookieService.getFromCookie(req, 'user')
+        const decoded: {_id: string, changeEmail: string} = await this.cookieService.getFromCookie(req, 'user')
         if (!decoded) {
             return next()
         }
 
-        const user = await this.userService.findOne({_id: decoded._id})
-        req.filteredUser = filterUser(user)
-        req.user = user
+        req.user = await this.userService.findOne({_id: decoded._id})
+
+        if (decoded.changeEmail) {
+            req.user.changeEmail = decoded.changeEmail
+        }
 
         // req.user = await this.userModel.findById(decoded._id)
         // const user = new this.userModel()
@@ -47,6 +45,3 @@ export class NotLoginedMiddleware implements NestMiddleware {
         next()
     }
 }
-
-
-

@@ -11,5 +11,5 @@ export type FilteredUser = {
     photoUrl: string | null
 }
 
-export type UserRequest = Request & {user: User, filteredUser: FilteredUser}
+export type UserRequest = Request & {user: User}
 

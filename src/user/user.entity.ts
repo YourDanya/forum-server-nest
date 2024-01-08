@@ -51,4 +51,6 @@ export class User {
         type: 'bigint'
     })
     resendActivateUser: number | null
+
+    changeEmail?: string
 }

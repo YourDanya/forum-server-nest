@@ -20,6 +20,8 @@ export class RegisterHandler {
 
         let user = await this.userService.findOne({email: body.email})
 
+        console.log('user', user)
+
         if (user && user.active) {
             return this.sendEmailInUseError(res)
         }

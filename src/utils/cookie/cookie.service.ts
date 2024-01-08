@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import * as nodemailer from 'nodemailer'
 import { CookieOptions } from 'express'
 import * as jwt from 'jsonwebtoken'
 import {Response} from 'express'
@@ -31,6 +30,9 @@ export class CookieService {
     }
 
     async getFromCookie (req: Request, name: string) {
-        return await promisify(jwt.verify)(req.cookies[name], process.env.JWT_SECRET)
+        if (!req.cookies[name]) {
+            return null
+        }
+        return await promisify(jwt.verify)(req.cookies[name] ?? null, process.env.JWT_SECRET)
     }
 }

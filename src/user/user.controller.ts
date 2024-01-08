@@ -17,6 +17,10 @@ import {UpdateUserHandler} from 'src/user/controller-handlers/update-user/update
 import {LoginBody} from 'src/user/controller-handlers/login/login.types'
 import {LoginHandler} from 'src/user/controller-handlers/login/login.handler'
 import {UserRequest} from 'src/user/user.types'
+import {GetMeHandler} from 'src/user/controller-handlers/get-me/get-me.handler'
+import {ChangeEmailHandler} from 'src/user/controller-handlers/change-email/change-email.handler'
+import {SendChangeEmailCodeHandler} from 'src/user/controller-handlers/send-change-email-code/send-change-email-code'
+import {ConfirmChangeEmailHandler} from 'src/user/controller-handlers/confirm-change-email/confirm-change-email.handler'
 
 @Controller('/user')
 export class UserController {
@@ -26,44 +30,53 @@ export class UserController {
         private sendRegisterCodeHandler: SendRegisterCodeHandler,
         private confirmRegisterEmailHandler: ConfirmRegisterEmailHandler,
         private updateUserHandler: UpdateUserHandler,
-        private loginHandler: LoginHandler
+        private loginHandler: LoginHandler,
+        private getMeHandler: GetMeHandler,
+        private changeEmailHandler: ChangeEmailHandler,
+        private sendChangeEmailCodeHandler: SendChangeEmailCodeHandler,
+        private confirmChangeEmailHandler :ConfirmChangeEmailHandler,
     ) {}
 
-    @Get('/data')
-    getUser(@Req() {user}: Response & { user: User }, @Res() res: Response) {
-        res.status(200).json({
-            message: 'Get user data successfully',
-            user
-        })
+    @Get('/get-me')
+    async getMe(@Req() req: UserRequest, @Res() res: Response) {
+        await this.getMeHandler.handle(req, res)
     }
-
     @Post('/login')
     async login(@Req() req: Request & {body: LoginBody}, @Res() res: Response) {
         await this.loginHandler.handle(req, res)
     }
-
     @Post('/register')
     async register(@Req() req: Request & {body: RegisterBody}, @Res() res: Response) {
         await this.registerHandler.handle(req, res)
     }
-
     @Get('/send-register-code')
     async sendRegisterCode(@Req() req: UserRequest, @Res() res: Response) {
         await this.sendRegisterCodeHandler.handle(req, res)
     }
-
     @Post('/confirm-register-email')
     async confirmRegisterEmail(@Req() req: UserRequest, @Res() res: Response) {
         await this.confirmRegisterEmailHandler.handle(req, res)
     }
-
     @Post('/data')
     async updateUser(@Req() req: Request & { user: User }, @Res() res: Response) {
         await this.updateUserHandler.handle(req, res)
     }
-
+    @Post('/change-email')
+    async changeEmail(@Req() req: Request & { user: User }, @Res() res: Response) {
+        await this.changeEmailHandler.handle(req, res)
+    }
+    @Post('/send-change-email-code')
+    async sendChangeEmailCode(@Req() req: Request & { user: User }, @Res() res: Response) {
+        await this.sendChangeEmailCodeHandler.handle(req, res)
+    }
+    @Post('/confirm-change-email')
+    async confirmChangeEmail(@Req() req: Request & { user: User }, @Res() res: Response) {
+        await this.confirmChangeEmailHandler.handle(req, res)
+    }
     @Delete('/')
-    async deleteMany(@Res() res: Response) {}
+    async deleteMany(@Res() res: Response) {
+
+    }
 
     @Get('/')
     async getAll(@Res() res: Response) {}

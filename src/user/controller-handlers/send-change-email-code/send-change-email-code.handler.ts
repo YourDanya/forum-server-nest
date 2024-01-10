@@ -1,11 +1,5 @@
 import {Injectable} from '@nestjs/common'
-import {UserService} from 'src/user/user.service'
-import {MailService} from 'src/utils/mail/mail.service'
-import {Request} from 'express'
-import {User} from 'src/user/user.entity'
 import {Response} from 'express'
-import * as pug from 'pug'
-import * as crypto from 'crypto'
 import {UserRequest} from 'src/user/user.types'
 import {SendCodeService} from 'src/user/utils/send-code/send-code.service'
 
@@ -22,12 +16,13 @@ export class SendChangeEmailCodeHandler {
         if (!user || !user.active) {
             return this.sendNoUserError(res)
         }
-
         if (!user.changeEmail) {
             return this.sendNoChangeEmailError(res)
         }
 
-        await this.sendCodeService.sendCode(req, res)
+        const sendCodeRes = await this.sendCodeService.sendCode(req, res)
+
+        if (!sendCodeRes) return
 
         this.sendSuccess(res)
     }

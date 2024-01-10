@@ -12,7 +12,7 @@ import {UserPgService} from 'src/user/services/user-pg.service'
 import {GetMeHandler} from 'src/user/controller-handlers/get-me/get-me.handler'
 import {SendCodeService} from 'src/user/utils/send-code/send-code.service'
 import {ChangeEmailHandler} from 'src/user/controller-handlers/change-email/change-email.handler'
-import {SendChangeEmailCodeHandler} from 'src/user/controller-handlers/send-change-email-code/send-change-email-code'
+import {SendChangeEmailCodeHandler} from 'src/user/controller-handlers/send-change-email-code/send-change-email-code.handler'
 import {ConfirmChangeEmailHandler} from 'src/user/controller-handlers/confirm-change-email/confirm-change-email.handler'
 
 export const userProviders = [

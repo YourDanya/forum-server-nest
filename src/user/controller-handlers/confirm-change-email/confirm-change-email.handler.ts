@@ -3,7 +3,7 @@ import {UserService} from 'src/user/user.service'
 import {CookieService} from 'src/utils/cookie/cookie.service'
 import {UserRequest} from 'src/user/user.types'
 import {Response} from 'express'
-import crypto from 'crypto'
+import * as crypto from 'crypto'
 import {filterUser} from 'src/user/utils/filter-user/filter-user'
 import {FilteredUser} from 'src/user/user.types'
 
@@ -25,14 +25,14 @@ export class ConfirmChangeEmailHandler {
             return this.sendInvalidError(res)
         }
 
-        await this.userService.updateOne({
+        const updatedUser = await this.userService.updateOne({
             _id: req.user._id, email: user.changeEmail,
             activateUserCode: null, resendActivateUser: null, activateUserExpires: null
         })
 
-        this.cookieService.addCookie(res, 'user', {_id: user._id})
+        this.cookieService.addCookie(res, 'user', {_id: updatedUser._id})
 
-        this.sendSuccess(res, filterUser(user))
+        this.sendSuccess(res, filterUser(updatedUser))
     }
 
     sendInvalidError(res: Response) {

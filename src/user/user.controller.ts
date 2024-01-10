@@ -19,7 +19,7 @@ import {LoginHandler} from 'src/user/controller-handlers/login/login.handler'
 import {UserRequest} from 'src/user/user.types'
 import {GetMeHandler} from 'src/user/controller-handlers/get-me/get-me.handler'
 import {ChangeEmailHandler} from 'src/user/controller-handlers/change-email/change-email.handler'
-import {SendChangeEmailCodeHandler} from 'src/user/controller-handlers/send-change-email-code/send-change-email-code'
+import {SendChangeEmailCodeHandler} from 'src/user/controller-handlers/send-change-email-code/send-change-email-code.handler'
 import {ConfirmChangeEmailHandler} from 'src/user/controller-handlers/confirm-change-email/confirm-change-email.handler'
 
 @Controller('/user')
@@ -65,7 +65,7 @@ export class UserController {
     async changeEmail(@Req() req: Request & { user: User }, @Res() res: Response) {
         await this.changeEmailHandler.handle(req, res)
     }
-    @Post('/send-change-email-code')
+    @Get('/send-change-email-code')
     async sendChangeEmailCode(@Req() req: Request & { user: User }, @Res() res: Response) {
         await this.sendChangeEmailCodeHandler.handle(req, res)
     }
@@ -77,7 +77,6 @@ export class UserController {
     async deleteMany(@Res() res: Response) {
 
     }
-
     @Get('/')
     async getAll(@Res() res: Response) {}
 }

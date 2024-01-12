@@ -14,6 +14,8 @@ import {SendCodeService} from 'src/user/utils/send-code/send-code.service'
 import {ChangeEmailHandler} from 'src/user/controller-handlers/change-email/change-email.handler'
 import {SendChangeEmailCodeHandler} from 'src/user/controller-handlers/send-change-email-code/send-change-email-code.handler'
 import {ConfirmChangeEmailHandler} from 'src/user/controller-handlers/confirm-change-email/confirm-change-email.handler'
+import {UpdatePasswordHandler} from 'src/user/controller-handlers/update-password/update-password.handler'
+import {LogoutHandler} from 'src/user/controller-handlers/logout/logout.handler'
 
 export const userProviders = [
     // {
@@ -34,6 +36,8 @@ export const userProviders = [
     ChangeEmailHandler,
     SendChangeEmailCodeHandler,
     ConfirmChangeEmailHandler,
+    UpdatePasswordHandler,
     UpdateUserHandler,
-    LoginHandler
+    LoginHandler,
+    LogoutHandler
 ]

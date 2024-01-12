@@ -15,8 +15,16 @@ export const createUpdateQuery = (tableName: string, updateColumns: string[], wh
         }
     }
 
+    let setValue: string
+
+    if (paramCount > 2) {
+        setValue = `(${columnNames}) = (${params})`
+    } else {
+        setValue = `${columnNames} = ${params}`
+    }
+
     return `
-        update ${tableName} set (${columnNames}) = (${params})
+        update ${tableName} set ${setValue}
         where ${whereColumn} = $${paramCount}
         returning ${returnColumns.join(', ')}
     `
